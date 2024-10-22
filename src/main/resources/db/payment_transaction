@@ -1,0 +1,21 @@
+CREATE TABLE `subscription`.`payment_transaction` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `bank_id` INT NOT NULL,
+  `subscription_id` VARCHAR(50) NOT NULL,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `payment_status` ENUM('SUCCESS', 'FAILED', 'PENDING') NOT NULL,
+  `payment_method` ENUM('DEBIT', 'CREDIT') NOT NULL,
+  `transaction_type` ENUM('ACTIVATION', 'DEACTIVATION',
+                          'RENEWAL', 'CANCELLATION') NOT NULL,
+  `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                ON UPDATE CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(45) NOT NULL,
+  `updated_by` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+
+  CONSTRAINT `bank_id`
+    FOREIGN KEY (`bank_id`)
+    REFERENCES `subscription`.`user_bank` (`id`)
+);
