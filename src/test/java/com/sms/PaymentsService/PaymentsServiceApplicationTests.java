@@ -1,4 +1,4 @@
-package com.lms.PaymentsService;
+package com.sms.PaymentsService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
