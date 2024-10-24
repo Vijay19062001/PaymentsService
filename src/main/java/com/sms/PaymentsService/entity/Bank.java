@@ -22,8 +22,8 @@ public class Bank {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "account_number", nullable = false)
     private String accountNumber;
@@ -50,8 +50,5 @@ public class Bank {
     @Column(name = "updated_by", nullable = false)
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "bank_id", insertable=false, updatable=false)
-    private PaymentTransaction paymentTransaction;
 
 }

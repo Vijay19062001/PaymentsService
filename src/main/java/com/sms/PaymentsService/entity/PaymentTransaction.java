@@ -62,4 +62,8 @@ public class PaymentTransaction {
     @Column(name = "updated_by", nullable = false)
     private String updatedBy;
 
+    @ManyToOne
+    @JoinColumn(name = "bank_id",insertable = false, updatable = false)
+    private Bank bank;
+
 }

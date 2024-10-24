@@ -14,10 +14,6 @@ public class PaymentTransactionMapper {
             paymentTransaction.setBankId(Integer.parseInt(paymentTransactionModel.getBankId()));
             paymentTransaction.setSubscriptionId(Integer.parseInt(paymentTransactionModel.getSubscriptionId()));
             paymentTransaction.setAmount(Double.parseDouble(paymentTransactionModel.getAmount()));
-            paymentTransaction.setPaymentStatus(paymentTransactionModel.getPaymentStatus());
-            paymentTransaction.setPaymentMethod(paymentTransactionModel.getPaymentMethod());
-            paymentTransaction.setStatus(paymentTransactionModel.getStatus());
-            paymentTransaction.setTransactionType(paymentTransactionModel.getTransactionType());
 
             return paymentTransaction;
         }
@@ -28,11 +24,6 @@ public class PaymentTransactionMapper {
         paymentTransactionModel.setBankId(String.valueOf(paymentTransaction.getBankId()));
         paymentTransactionModel.setSubscriptionId(String.valueOf(paymentTransaction.getSubscriptionId()));
         paymentTransactionModel.setAmount(String.valueOf(paymentTransaction.getAmount()));
-        paymentTransactionModel.setPaymentStatus(paymentTransaction.getPaymentStatus());
-        paymentTransactionModel.setPaymentMethod(paymentTransaction.getPaymentMethod());
-        paymentTransactionModel.setStatus(paymentTransaction.getStatus());
-        paymentTransactionModel.setTransactionType(paymentTransaction.getTransactionType());
-
         return paymentTransactionModel;
     }
 

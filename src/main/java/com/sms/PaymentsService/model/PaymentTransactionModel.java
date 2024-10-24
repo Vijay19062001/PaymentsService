@@ -21,6 +21,8 @@ public class PaymentTransactionModel{
 
     private String subscriptionId;
 
+    private String userId;
+
     private String amount;
 
     private PaymentStatus paymentStatus;

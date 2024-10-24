@@ -5,10 +5,9 @@ import lombok.Getter;
 @Getter
 public enum TransactionType {
 
-    ACTIVATION("activation"),
-    DEACTIVATION("deactivation"),
-    RENEWAL("renewal"),
-    CANCELLATION("cancellation");
+    DEBITCARD("debitCard"),
+    CREDITCARD("creditCard"),
+    UPI("upi");
 
     private final String type;
 

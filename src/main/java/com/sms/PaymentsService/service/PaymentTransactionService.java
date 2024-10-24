@@ -4,6 +4,6 @@ import com.sms.PaymentsService.model.PaymentTransactionModel;
 
 public interface PaymentTransactionService {
 
-    public PaymentTransactionModel processPayment(PaymentTransactionModel paymentTransactionModel, String authToken) ;
+    public PaymentTransactionModel processPayment(PaymentTransactionModel paymentTransactionModel) ;
 
     }
