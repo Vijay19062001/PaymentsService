@@ -16,19 +16,9 @@ import com.sms.PaymentsService.service.PaymentTransactionService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,18 +29,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     private final PaymentTransactionRepository paymentTransactionRepository;
     private final BankRepository bankRepository;
     private final PaymentTransactionMapper paymentTransactionMapper;
-    private RestTemplate restTemplate;
-
-    @Value("subscription.service.url")
-    private String subscriptionServiceUrl;
-
-    @Autowired
-    public PaymentTransactionServiceImpl(PaymentTransactionRepository paymentTransactionRepository, BankRepository bankRepository, PaymentTransactionMapper paymentTransactionMapper, RestTemplate restTemplate) {
-        this.paymentTransactionRepository = paymentTransactionRepository;
-        this.bankRepository = bankRepository;
-        this.paymentTransactionMapper = paymentTransactionMapper;
-        this.restTemplate = restTemplate;
-    }
 
     @Transactional
     @Override
@@ -59,33 +37,36 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
         validatePaymentDetails(paymentTransactionModel);
 
+
         Optional<Bank> bankOptional = bankRepository.findById(Integer.valueOf(paymentTransactionModel.getBankId()));
         if (bankOptional.isEmpty()) {
             logger.error("Bank account with ID {} not found.", paymentTransactionModel.getBankId());
-            throw new BusinessValidationException("Bank account not found.");
+            throw new RuntimeException("Bank account not found.");
         }
 
         Bank bank = bankOptional.get();
-
-        updateBankAccountBalance(bank, paymentTransactionModel);
-
-        subscriptionForServiceInSubscriptionService(paymentTransactionModel);
+        if (bank.getBalance() < Double.parseDouble(paymentTransactionModel.getAmount())) {
+            logger.error("Insufficient funds in bank account ID: {}. Available balance: {}", bank.getId(), bank.getBalance());
+            throw new RuntimeException("Insufficient funds.");
+        }
 
         try {
+            bank.setBalance(bank.getBalance() - Double.parseDouble(paymentTransactionModel.getAmount()));
+            bank.setUpdatedDate(LocalDateTime.now());
+            bankRepository.save(bank);
+
             PaymentTransaction paymentTransaction = paymentTransactionMapper.toEntity(paymentTransactionModel);
             paymentTransaction.setPaymentStatus(PaymentStatus.SUCCESS);
-            paymentTransaction.setStatus(Status.ACTIVE);
             paymentTransaction.setPaymentMethod(PaymentMethod.CREDIT);
-            paymentTransaction.setTransactionType(TransactionType.DEBITCARD);
+            paymentTransaction.setTransactionType(TransactionType.CREDITCARD);
+            paymentTransaction.setStatus(Status.ACTIVE);
             paymentTransaction.setCreatedDate(LocalDateTime.now());
             paymentTransaction.setUpdatedDate(LocalDateTime.now());
-            paymentTransaction.setCreatedBy(bank.getName());
-            paymentTransaction.setUpdatedBy(bank.getName());
+            paymentTransaction.setCreatedBy("system");
+            paymentTransaction.setUpdatedBy("system");
 
             paymentTransactionRepository.save(paymentTransaction);
             logger.info("Payment transaction successfully completed with ID: {}", paymentTransaction.getId());
-
-
 
             paymentTransactionModel = paymentTransactionMapper.toModel(paymentTransaction);
 
@@ -128,6 +109,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
         }
     }
 
+
     public void updateBankAccountBalance(Bank bankAccount, PaymentTransactionModel model) {
         logger.info("Updating bank account balance for account ID: {}", bankAccount.getAccountNumber());
 
@@ -148,32 +130,6 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
         bankRepository.save(bankAccount);
         logger.info("Bank account balance updated successfully for account ID: {}", bankAccount.getAccountNumber());
-    }
-
-    private void subscriptionForServiceInSubscriptionService(PaymentTransactionModel model) {
-        String url = subscriptionServiceUrl + "/subscription/create";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("transactionId", model.getId());
-        requestBody.put("serviceId", model.getSubscriptionId());
-        requestBody.put("userId", model.getUserId());
-        requestBody.put("createdBy", model.getCreatedBy());
-
-        logger.info("Sending subscription request to SubscriptionService - transactionId: {}, subscriptionId: {}, userId: {}",
-                model.getId(), model.getSubscriptionId(), model.getUserId());
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            logger.error("Failed to register for subscription. Response status: {}", response.getStatusCode());
-            throw new BusinessValidationException("Failed to subscription for service.");
-        }
-
-        logger.info("Successfully subscription for service. Response: {}", response.getBody());
     }
 
 }
