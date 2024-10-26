@@ -4,6 +4,7 @@ import com.sms.PaymentsService.enums.PaymentMethod;
 import com.sms.PaymentsService.enums.PaymentStatus;
 import com.sms.PaymentsService.enums.Status;
 import com.sms.PaymentsService.enums.TransactionType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +20,19 @@ public class PaymentTransactionModel{
 
     private String bankId;
 
-    private String subscriptionId;
+    @NotNull(message = "Service ID is required.")
+    private String serviceId;
 
     private String userId;
 
+    @NotNull(message = "Payment amount is required.")
     private String amount;
 
     private PaymentStatus paymentStatus;
 
     private PaymentMethod paymentMethod;
 
-    private Status status;
+    private String status;
 
     private TransactionType transactionType;
 

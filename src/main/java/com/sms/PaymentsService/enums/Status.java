@@ -10,13 +10,13 @@ public enum Status {
         this.status = status;
     }
 
-    public String getDbStatus() {
+    public String getStatus() {
         return status;
     }
 
     public static Status fromString(String status) {
         for (Status s : Status.values()) {
-            if (s.name().equalsIgnoreCase(status)) {
+            if (s.getStatus().equalsIgnoreCase(status)) {
                 return s;
             }
         }

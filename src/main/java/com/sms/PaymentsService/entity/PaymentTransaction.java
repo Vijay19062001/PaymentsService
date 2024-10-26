@@ -28,8 +28,8 @@ public class PaymentTransaction {
     @Column(name = "bank_id", nullable = false)
     private int bankId;
 
-    @Column(name = "subscription_id", nullable = false)
-    private int subscriptionId;
+    @Column(name = "service_id", nullable = false)
+    private int serviceId;
 
     @Column(name = "amount", nullable = false)
     private double amount;

@@ -30,28 +30,13 @@ public class PaymentTransactionController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "PaymentTransaction created successfully"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(description = "Invalid or missing token")
     })
-    public ResponseEntity<String> addPaymentTransaction(
-            @RequestBody @Valid PaymentTransactionModel paymentTransactionModel) {
 
+    public ResponseEntity<?> addPaymentTransaction(@RequestBody PaymentTransactionModel paymentTransactionModel) {
         logger.info("Received request to create payment transaction with details: {}", paymentTransactionModel);
 
-        try {
-            PaymentTransactionModel processedTransaction = paymentTransactionService.processPayment(paymentTransactionModel);
-            String successMessage = "Payment transaction successfully added with ID: " + processedTransaction.getId();
-            logger.info(successMessage);
-            return ResponseEntity.status(201).body(successMessage);
-
-        } catch (IllegalArgumentException e) {
-            logger.error("Validation error while creating payment transaction: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(" error: " + e.getMessage());
-
-        } catch (BusinessValidationException e) {
-            logger.error("Business validation error while processing payment: {}", e.getMessage());
-            return ResponseEntity.status(422).body("Business error: " + e.getMessage());
-
-        } catch (Exception e) {
-            logger.error("error occurred: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
-        }
+            return ResponseEntity.ok(paymentTransactionService.processPayment(paymentTransactionModel));
     }
-}
+
+
+    }
+

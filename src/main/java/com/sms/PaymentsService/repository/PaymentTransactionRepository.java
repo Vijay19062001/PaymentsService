@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface PaymentTransactionRepository extends JpaRepository<PaymentTransaction, Integer> {
 
-    List<PaymentTransaction> findBySubscriptionId(Integer subscriptionId);
+    List<PaymentTransaction> findByServiceId(Integer serviceId);
 
 }
