@@ -25,8 +25,8 @@ public class PaymentTransaction {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "bank_id", nullable = false)
-    private int bankId;
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
 
     @Column(name = "service_id", nullable = false)
     private int serviceId;
@@ -63,7 +63,7 @@ public class PaymentTransaction {
     private String updatedBy;
 
     @ManyToOne
-    @JoinColumn(name = "bank_id",insertable = false, updatable = false)
+    @JoinColumn(name = "account_number",insertable = false, updatable = false)
     private Bank bank;
 
 }

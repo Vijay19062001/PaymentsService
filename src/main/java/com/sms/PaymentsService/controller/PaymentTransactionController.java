@@ -1,11 +1,9 @@
 package com.sms.PaymentsService.controller;
 
-import com.sms.PaymentsService.exception.custom.BusinessValidationException;
 import com.sms.PaymentsService.model.PaymentTransactionModel;
 import com.sms.PaymentsService.service.PaymentTransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,5 +36,4 @@ public class PaymentTransactionController {
     }
 
 
-    }
-
+}

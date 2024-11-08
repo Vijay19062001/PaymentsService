@@ -1,6 +1,5 @@
 package com.sms.PaymentsService.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter

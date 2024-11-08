@@ -36,9 +36,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
         validatePaymentDetails(paymentTransactionModel);
 
-        Optional<Bank> bankOptional = bankRepository.findById(Integer.valueOf(paymentTransactionModel.getBankId()));
+        Optional<Bank> bankOptional = bankRepository.findByAccountNumber(paymentTransactionModel.getAccountNumber());
         if (bankOptional.isEmpty()) {
-            logger.error("Bank account with ID {} not found.", paymentTransactionModel.getBankId());
+            logger.error("Bank account with ID {} not found.", paymentTransactionModel.getAccountNumber());
             throw new BusinessValidationException("Bank account not found.");
         }
 
@@ -77,8 +77,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
             logger.error("Payment amount is missing.");
             throw new BasicValidationException("Payment amount is required.");
         }
-
-
+        
         try {
             double amount = Double.parseDouble(paymentTransactionModel.getAmount().trim());
             if (amount <= 0) {
@@ -90,7 +89,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
             throw new BasicValidationException("Payment amount must be a valid number.");
         }
 
-        if (paymentTransactionModel.getBankId() == null || paymentTransactionModel.getBankId().isEmpty()) {
+        if (paymentTransactionModel.getAccountNumber() == null || paymentTransactionModel.getAccountNumber().isEmpty()) {
             logger.error("Bank ID is missing.");
             throw new BasicValidationException("Bank ID is required.");
         }
@@ -117,7 +116,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
         }
 
         bankAccount.setUpdatedDate(LocalDateTime.now());
-        bankAccount.setUpdatedBy("system");
+        bankAccount.setUpdatedBy(model.getUserId());
 
         bankRepository.save(bankAccount);
         logger.info("Bank account balance updated successfully for account ID: {}", bankAccount.getAccountNumber());

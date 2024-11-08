@@ -2,7 +2,6 @@ package com.sms.PaymentsService.model;
 
 import com.sms.PaymentsService.enums.PaymentMethod;
 import com.sms.PaymentsService.enums.PaymentStatus;
-import com.sms.PaymentsService.enums.Status;
 import com.sms.PaymentsService.enums.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,7 @@ public class PaymentTransactionModel{
 
     private String id;
 
-    private String bankId;
+    private String accountNumber;
 
     @NotNull(message = "Service ID is required.")
     private String serviceId;
